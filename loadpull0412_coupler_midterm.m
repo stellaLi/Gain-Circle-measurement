@@ -16,7 +16,6 @@
 % Set up GPIB Connection
 % connection via GPIB test
 % data available
-
 % Find a GPIB object.
 obj1 = instrfind('Type', 'gpib', 'BoardIndex', 0, 'PrimaryAddress', 17, 'Tag', '');
 
@@ -128,13 +127,14 @@ fclose(obj1);
 S21 = S21_20 + 20;
 S31 = S31_20 + 20;
 
+
 S21lin = 10.^(S21./20);
 S31lin = 10.^(S31./20);
 S11lin = 10.^(S11./20);
 
 %%
-rs_mag = S31lin./S21lin;
-rs_pha = S31_p - S21_p+90.5+174;
+rs_mag = S31_f./S21lin;
+rs_pha = S31_p - S21_p+(-81.7);
 
 rsr = rs_mag.*cos((rs_pha)./180.*pi);
 rsx = rs_mag.*sin((rs_pha)./180.*pi);
@@ -156,6 +156,7 @@ meas = S21lin.^2;
 %scatter3(rsr,rsx,calc,'b');
 hold on;
 %scatter3(rsr,rsx,meas,'r');
+%daspect([1 1 1]);
 axis([-1 1 -1 1]);
 %Gop_db = 10.*log10(s21abs.^2.*(1-abs(rsr + 1i.*rsx).^2)./abs(1-s22.*(rsr+1i.*rsx)).^2);
 %Gop_db = 10.*log10((S21lin.^2).*(1-abs(rsr + 1i.*rsx).^2));
@@ -166,6 +167,25 @@ Gop_db = log10(Gop).*10;
 scatter3(rsr,rsx,Gop_db);
 axis([-1 1 -1 1]);
 
+%%
+
+rs_mag = S31lin./S21lin;
+
+k = 1;
+for ps = -180:0.1:180
+    rs_pha = S31_p - S21_p+ps;
+
+    rsr = rs_mag.*cos((rs_pha)./180.*pi);
+    rsx = rs_mag.*sin((rs_pha)./180.*pi);
+
+    calc = (s21abs)./(abs(1-s22.*(rsr+1i.*rsx)));
+    meas = S21lin;
+
+    y(k) = sum((calc - meas).^2);
+    k = k + 1;
+end
+ps = -180:0.1:180;
+plot(ps,y);
 %%
 calc = (s21abs)./(abs(1-s22.*(rsr+1i.*rsx)));
 meas = S21lin;

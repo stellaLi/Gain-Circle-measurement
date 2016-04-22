@@ -61,7 +61,7 @@ vestimated,resnorm,exitflag,output.firstorderopt
 scatter3(rsr,rsx,Gop_db);
 
 axis([-1 1 -1 1 ]);
-%axis equal;
+
 %%
 hold on
 
@@ -77,5 +77,5 @@ axis([-1 1 -1 1 ]);
 hold on
 contour(a,b,c,[16 15.5 15 14 13.5 13 12 11 10]);
 print -deps epsFig
-
+daspect([1 1 1]);
 
