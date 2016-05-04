@@ -57,10 +57,13 @@ ub = [1;1;20];
 vestimated,resnorm,exitflag,output.firstorderopt
 
 %%
-
+hold on
 scatter3(rsr,rsx,Gop_db);
 
 axis([-1 1 -1 1 ]);
+xlabel('Reflection Coefficient (Real)') % x-axis label
+ylabel('Reflection Coefficient (Imag)') % y-axis label
+zlabel('Power Gain (db)') % z-axis label
 
 %%
 hold on
@@ -70,12 +73,19 @@ M = 100;
 a = rho.*cos(phi);
 b = rho.*sin(phi);
 c = 10.*log10((1-abs(a + 1i.*b).^2)./abs(1-(vestimated(1)+1i.*vestimated(2)).*(a+1i*b)).^2)+vestimated(3);
-surf(a,b,c);
+mesh(a,b,c);
+colormap(parula(6));
 axis([-1 1 -1 1 ]);
+xlabel('Reflection Coefficient (Real)') % x-axis label
+ylabel('Reflection Coefficient (Imag)') % y-axis label
+zlabel('Power Gain (db)') % z-axis label
 
 %% coutour
 hold on
 contour(a,b,c,[16 15.5 15 14 13.5 13 12 11 10]);
 print -deps epsFig
 daspect([1 1 1]);
+
+%%
+relatres = residuals./zdata;
 

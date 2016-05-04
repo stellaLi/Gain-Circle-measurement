@@ -41,6 +41,7 @@ fopen(obj1);
 i = 1;
 while (i < max_point)
     figure(2);
+    
     userpress = waitforbuttonpress;
     
     fprintf(obj1, 'CALCulate1:PARameter:MEASure "Trc1", "s21"');
@@ -77,13 +78,6 @@ while (i < max_point)
     S11dBM_s = str2num(S11Data);
     S11dBM = S11dBM_s(1);
     
-    S21_20(i,:) = S21dBM20;
-    S31_20(i,:) = S31dBM20;
-    S11(i,:) = S11dBM;
-    
-    S21_p(i,:) = S21_pha;
-    S31_p(i,:) = S31_pha;
-    
     figure(1);
     S21 = S21dBM20 + 20;
     S31 = S31dBM20 + 20;
@@ -100,6 +94,13 @@ while (i < max_point)
     figure(1);hold on;
     scatter(rsr,rsx,'b');
     axis([-1 1 -1 1]);
+    
+    S21_20(i,:) = S21dBM20;
+    S31_20(i,:) = S31dBM20;
+    S11(i,:) = S11dBM;
+    
+    S21_p(i,:) = S21_pha;
+    S31_p(i,:) = S31_pha;
     
     i = i + 1;
 end
@@ -130,6 +131,11 @@ rsx = rs_mag.*sin((rs_pha)./180.*pi);
 %axis([-1 1 -1 1]);
 
 %%
+%
+% Measurement Result
+%
+%
+%
 s22=-0.0957 + 0.0466*1i;
 s21abs = 6.04;
 %calc = (s21abs.^2)./(abs(1-s22.*(rsr+1i.*rsx)).^2);
@@ -149,6 +155,9 @@ Gop = meas.*(1-abs(rsr+1i.*rsx).^2);
 Gop_db = log10(Gop).*10;
 scatter3(rsr,rsx,Gop_db);
 axis([-1 1 -1 1]);
+xlabel('Reflection Coefficient (Real)') % x-axis label
+ylabel('Reflection Coefficient (Imag)') % y-axis label
+zlabel('Power Gain (db)') % z-axis label
 
 %%
 
@@ -161,7 +170,7 @@ for ps = -180:0.1:180
     rsr = rs_mag.*cos((rs_pha)./180.*pi);
     rsx = rs_mag.*sin((rs_pha)./180.*pi);
 
-    calc = (s21abs)./(abs(1-s22.*(rsr+1i.*rsx)));
+    calc = (  s21abs)./(abs(1-s22.*(rsr+1i.*rsx)));
     meas = S21lin;
 
     y(k) = sum((calc - meas).^2);
@@ -176,3 +185,37 @@ scatter3(rsr,rsx,calc,'b');
 hold on;
 scatter3(rsr,rsx,meas,'r');
 axis([-1 1 -1 1]);
+
+%% smith chart
+t = linspace(0,2*pi,100);
+hold on;
+plot(sin(t),cos(t),'b');
+r = 0.5;
+plot(r.*sin(t)+1-r,r.*cos(t),'b');
+r = 0.8;
+plot(r.*sin(t)+1-r,r.*cos(t),'b');
+r = 1;
+plot(1-r.*cos(t),r-r.*sin(t),'b');
+
+t = linspace(-0.65,3,100);
+r = 0.5;
+plot(1-r.*cos(t),r-r.*sin(t),'b');
+
+t = linspace(0,2*pi,100);
+r = -1;
+plot(1-r.*cos(t),r-r.*sin(t),'b');
+
+t = linspace(1,3.8,100);
+r = -0.5;
+plot(1-r.*cos(t),r-r.*sin(t),'b');
+
+t = linspace(0.928,2,100);
+r = 3;
+plot(1-r.*cos(t),r-r.*sin(t),'b');
+
+t = linspace(-0.65,2.215,100);
+r = -3;
+plot(1-r.*cos(t),r-r.*sin(t),'b');
+
+axis([-1 1 -1 1]);
+
