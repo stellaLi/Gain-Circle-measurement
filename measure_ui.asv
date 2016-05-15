@@ -1,7 +1,7 @@
 function [rsr,rsx,Gop_db] = measure_ui
     
-    phas_p1 = -0.8359;
-    phas_p2 = 698.7401;
+    phas_p1 = -0.8345;
+    phas_p2 = 670.6256;
     obj1 = findVNA;
     fopen(obj1);
     fprintf(obj1, 'FREQ:STOP 1000MHz');
@@ -269,15 +269,14 @@ function [rsr,rsx,Gop_db] = measure_ui
     end
 
     function fitmeas(source,callbackdata)
-        phas = current_freq_num*phas_p1 +phas_p2;
-        [atten] = attenuation(current_freq_num);
-        %phas = -81+360;
+        %phas = current_freq_num*phas_p1 +phas_p2;
+        phas = -81+360;
         if i > 3
             S21 = S21_20 + 20;
             S31 = S31_20 + 20;
             S31_f = S31 - 0.53;
 
-            S21lin = 10.^(S21./20).*atten;
+            S21lin = 10.^(S21./20);
             S31lin = 10.^(S31./20).*0.97;
             S11lin = 10.^(S11./20);
             
@@ -288,7 +287,7 @@ function [rsr,rsx,Gop_db] = measure_ui
             rsx = rs_mag.*sin((rs_pha)./180.*pi);
             
             %Gop = S21lin.^2.*(1-abs(rsr+1i.*rsx).^2);
-            Gop = S21lin.^2-S31lin.^2;
+            Gop = S21lin
             Gop_db = log10(Gop).*10;
             measure_result_str = 'get';
             
